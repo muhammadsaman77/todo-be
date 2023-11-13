@@ -5,6 +5,7 @@ const { config } = require("dotenv");
 const userRoute = require("./routes/user.route");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const todosRoute = require("./routes/todo.route");
 config();
 const PORT = process.env.PORT;
 
@@ -18,6 +19,7 @@ async function testConnection() {
 }
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/todos", todosRoute);
 app.use("/", userRoute);
 
 app.listen(PORT, async () => {

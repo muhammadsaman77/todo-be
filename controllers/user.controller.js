@@ -1,40 +1,57 @@
-const { Users } = require("../models");
+const { User } = require("../models");
 const bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const { errorResponse } = require("../utils/response");
+const { config } = require("dotenv");
+config();
 module.exports = {
   loginUser: async (req, res) => {
     const { email, password } = req.body;
-    const user = await Users.findOne({
-      where: {
-        email,
-      },
-    });
-    bcrypt.compare(password, user.password, function (err, result) {
-      if (!result) {
-        res.status(404).json({
-          message: "User Not Found",
-        });
-        return;
+    if (!email || !password) {
+      return errorResponse(res, 400, "Invalid Request");
+    }
+    try {
+      const user = await User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!user) {
+        return errorResponse(res, 404, "User Not Found");
       }
-      const token = jwt.sign(
-        { username: user.username, email: user.email },
-        "sh7a8wj"
-      );
-      res.status(200).json({
-        message: "user authentication successful",
-        token,
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (!result) {
+          return errorResponse(res, 404, "Password Not Match");
+        }
+        const token = jwt.sign(
+          { id: user.id, username: user.username, email: user.email },
+          process.env.PRIVATE_KEY
+        );
+        return res.status(200).json({
+          message: "user authentication successful",
+          token,
+        });
       });
-    });
+    } catch (error) {
+      return errorResponse(res, 500, "Internal Server Error");
+    }
   },
-  RegisterNewUser: (req, res) => {
-    const saltRounds = 10;
+  registerNewUser: (req, res) => {
+    const saltRounds = process.env.SALT;
     const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return errorResponse(res, 400, "Invalid Request");
+    }
     bcrypt.hash(password, saltRounds, async function (err, hash) {
-      const newUser = await Users.create({ username, email, password: hash });
-      res.status(201).json({
-        message: "Create New User Successfully",
-        newUser: newUser,
-      });
+      try {
+        const newUser = await User.create({ username, email, password: hash });
+        return res.status(201).json({
+          message: "Create New User Successfully",
+          newUser: newUser,
+        });
+      } catch (error) {
+        return errorResponse(res, 500, "Internal Server Error");
+      }
     });
   },
 };
