@@ -17,7 +17,7 @@
   ```json
   {
     "status": "success",
-    "token": ""eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwidXNlcm5hbWUiOiJzYW1hbjY3IiwiZW1haWwiOiJzYW1hbjY3QGdtYWlsLmNvbSIsImlhdCI6MTY5OTg5MzA1N30.9Bm5lVlVyIsHq_8-9r3EYcSpOBz-cXRpFjocFmJTUEU""
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwidXNlcm5hbWUiOiJzYW1hbjY3IiwiZW1haWwiOiJzYW1hbjY3QGdtYWlsLmNvbSIsImlhdCI6MTY5OTg5MzA1N30.9Bm5lVlVyIsHq_8-9r3EYcSpOBz-cXRpFjocFmJTUEU"
   }
   ```
 
